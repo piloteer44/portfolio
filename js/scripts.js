@@ -10,7 +10,7 @@
     $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {
         if (
             location.pathname.replace(/^\//, "") ==
-                this.pathname.replace(/^\//, "") &&
+            this.pathname.replace(/^\//, "") &&
             location.hostname == this.hostname
         ) {
             var target = $(this.hash);
@@ -18,9 +18,18 @@
                 ? target
                 : $("[name=" + this.hash.slice(1) + "]");
             if (target.length) {
+                // Modified scroll offset to ease when scrolling to bottom or top item
+                let offset = target.offset().top - 70;
+                if (offset < 0) offset = 0;
+                if (target[0].offsetTop + target[0].clientHeight >= document.body.clientHeight) {
+                    let min = target[0].offsetTop - window.innerHeight + target[0].clientHeight;
+                    if (offset > min) {
+                        offset = min;
+                    }
+                }
                 $("html, body").animate(
                     {
-                        scrollTop: target.offset().top - 70,
+                        scrollTop: offset,
                     },
                     1000,
                     "easeInOutExpo"
